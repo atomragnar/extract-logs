@@ -17,8 +17,8 @@ func WriteSliceToFile(slice []*loggingpb.LogEntry, filename string) error {
 	}
 
 	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
+		closErr := file.Close()
+		if closErr != nil {
 			log.Fatalf("error closing file: %v", err)
 		}
 	}(file)
@@ -26,10 +26,12 @@ func WriteSliceToFile(slice []*loggingpb.LogEntry, filename string) error {
 	writer := bufio.NewWriter(file)
 
 	jsonData, err := json.Marshal(slice)
+
 	if err != nil {
 		return fmt.Errorf("error marshalling json: %w", err)
 	}
 	_, err = writer.Write(jsonData)
+
 	if err != nil {
 		return fmt.Errorf("error writing to file: %w", err)
 	}

@@ -21,9 +21,11 @@ func ListLogEntries(logRequest LogRequest) ([]*loggingpb.LogEntry, error) {
 	project := fmt.Sprintf("projects/%s", logRequest.ProjectId)
 
 	client, err := logging.NewClient(ctx)
+
 	if err != nil {
 		log.Fatalf("Failed to create logging client: %v", err)
 	}
+
 	defer func(client *logging.Client) {
 		closErr := client.Close()
 		if closErr != nil {
@@ -37,6 +39,7 @@ func ListLogEntries(logRequest LogRequest) ([]*loggingpb.LogEntry, error) {
 		Filter:        logRequest.Filter,
 	}
 	it := client.ListLogEntries(ctx, req)
+
 	for {
 		entry, err := it.Next()
 		if errors.Is(err, iterator.Done) {
